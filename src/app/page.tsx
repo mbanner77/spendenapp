@@ -28,11 +28,11 @@ export default function Home() {
             <div className="mb-8">
               <div className="inline-flex items-center gap-3 mb-4">
                 <Image
-                  src="https://realcore.info/bilder/rc-logo.png"
+                  src="https://realcore.info/bilder/RealCore_Logo.png"
                   alt="RealCore Group Logo"
-                  width={200}
-                  height={60}
-                  className="h-12 w-auto"
+                  width={220}
+                  height={55}
+                  className="h-14 w-auto"
                   priority
                 />
               </div>
@@ -251,11 +251,11 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Image
-                src="https://realcore.info/bilder/rc-logo.png"
+                src="https://realcore.info/bilder/RealCore_Logo.png"
                 alt="RealCore Group Logo"
-                width={120}
-                height={36}
-                className="h-8 w-auto"
+                width={140}
+                height={35}
+                className="h-9 w-auto"
               />
             </div>
             <div className="flex gap-6 text-sm text-white/60">
