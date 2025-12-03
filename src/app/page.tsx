@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Heart, Gift, Star, TreePine, Sparkles, Building2, Cross, ExternalLink, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
-import DonationForm from '@/components/DonationForm';
+import DonationForm from '../components/DonationForm';
 
 export default function Home() {
   return (
