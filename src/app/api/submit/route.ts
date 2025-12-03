@@ -1,5 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+
+const CONFIG_FILE = join(process.cwd(), 'smtp-config.json');
+
+interface SMTPConfig {
+  host: string;
+  port: string;
+  user: string;
+  pass: string;
+  secure: boolean;
+  from: string;
+}
+
+function getSMTPConfig(): SMTPConfig | null {
+  // First check environment variables
+  if (process.env.SMTP_HOST) {
+    return {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT || '587',
+      user: process.env.SMTP_USER || '',
+      pass: process.env.SMTP_PASS || '',
+      secure: process.env.SMTP_SECURE === 'true',
+      from: process.env.SMTP_FROM || 'noreply@realcore.de',
+    };
+  }
+  
+  // Fallback to config file
+  if (existsSync(CONFIG_FILE)) {
+    try {
+      const data = readFileSync(CONFIG_FILE, 'utf-8');
+      const config = JSON.parse(data);
+      if (config.host) {
+        return config;
+      }
+    } catch {
+      // Return null if file is invalid
+    }
+  }
+  
+  return null;
+}
 
 interface FormData {
   name: string;
@@ -104,36 +146,22 @@ Zeitstempel: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
 </html>
     `.trim();
 
-    // Configure email transport
-    // NOTE: For production, configure SMTP settings via environment variables
-    // Example with SMTP:
-    // const transporter = nodemailer.createTransport({
-    //   host: process.env.SMTP_HOST,
-    //   port: parseInt(process.env.SMTP_PORT || '587'),
-    //   secure: process.env.SMTP_SECURE === 'true',
-    //   auth: {
-    //     user: process.env.SMTP_USER,
-    //     pass: process.env.SMTP_PASS,
-    //   },
-    // });
-
-    // For development/testing, you can use a test account or skip sending
-    // In production, uncomment and configure the transporter above
+    // Try to send email if SMTP is configured (via env vars or config file)
+    const smtpConfig = getSMTPConfig();
     
-    // Try to send email if SMTP is configured
-    if (process.env.SMTP_HOST) {
+    if (smtpConfig) {
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: process.env.SMTP_SECURE === 'true',
+        host: smtpConfig.host,
+        port: parseInt(smtpConfig.port),
+        secure: smtpConfig.secure,
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
+          user: smtpConfig.user,
+          pass: smtpConfig.pass,
         },
       });
 
       await transporter.sendMail({
-        from: process.env.SMTP_FROM || 'noreply@realcore.de',
+        from: smtpConfig.from,
         to: 'events@realcore.de',
         subject: `🎄 Neue Gewinnspiel-Teilnahme: ${data.name} - ${data.firma}`,
         text: emailContent,
