@@ -1,0 +1,396 @@
+'use client';
+
+import { useState } from 'react';
+import { Send, Loader2, AlertCircle, Building2, Cross, ExternalLink } from 'lucide-react';
+
+interface FormData {
+  name: string;
+  firma: string;
+  position: string;
+  email: string;
+  spendenauswahl: string;
+  teilnahmebedingungen: boolean;
+}
+
+interface FormErrors {
+  name?: string;
+  firma?: string;
+  position?: string;
+  email?: string;
+  spendenauswahl?: string;
+  teilnahmebedingungen?: string;
+}
+
+export default function DonationForm() {
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    firma: '',
+    position: '',
+    email: '',
+    spendenauswahl: '',
+    teilnahmebedingungen: false,
+  });
+
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Bitte geben Sie Ihren Namen ein';
+    }
+
+    if (!formData.firma.trim()) {
+      newErrors.firma = 'Bitte geben Sie Ihre Firma ein';
+    }
+
+    if (!formData.position.trim()) {
+      newErrors.position = 'Bitte geben Sie Ihre Position ein';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Bitte geben Sie Ihre E-Mail-Adresse ein';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Bitte geben Sie eine gültige E-Mail-Adresse ein';
+    }
+
+    if (!formData.spendenauswahl) {
+      newErrors.spendenauswahl = 'Bitte wählen Sie eine Spendenorganisation';
+    }
+
+    if (!formData.teilnahmebedingungen) {
+      newErrors.teilnahmebedingungen = 'Bitte akzeptieren Sie die Teilnahmebedingungen';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        // Redirect to thank you page
+        window.location.href = '/danke';
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+    // Clear error when user starts typing
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="card-gradient rounded-2xl p-8 md:p-10">
+      {/* Personal Information */}
+      <div className="space-y-6">
+        {/* Name */}
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-white/90 mb-2">
+            Name (Titel, Vor- und Nachname) <span className="text-realcore-gold">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
+              errors.name ? 'border-red-500' : 'border-white/20'
+            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            placeholder="z.B. Dr. Max Mustermann"
+          />
+          {errors.name && (
+            <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+              <AlertCircle size={14} /> {errors.name}
+            </p>
+          )}
+        </div>
+
+        {/* Firma */}
+        <div>
+          <label htmlFor="firma" className="block text-sm font-medium text-white/90 mb-2">
+            Firma <span className="text-realcore-gold">*</span>
+          </label>
+          <input
+            type="text"
+            id="firma"
+            name="firma"
+            value={formData.firma}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
+              errors.firma ? 'border-red-500' : 'border-white/20'
+            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            placeholder="Name Ihres Unternehmens"
+          />
+          {errors.firma && (
+            <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+              <AlertCircle size={14} /> {errors.firma}
+            </p>
+          )}
+        </div>
+
+        {/* Position */}
+        <div>
+          <label htmlFor="position" className="block text-sm font-medium text-white/90 mb-2">
+            Position <span className="text-realcore-gold">*</span>
+          </label>
+          <input
+            type="text"
+            id="position"
+            name="position"
+            value={formData.position}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
+              errors.position ? 'border-red-500' : 'border-white/20'
+            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            placeholder="Ihre Berufsbezeichnung"
+          />
+          {errors.position && (
+            <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+              <AlertCircle size={14} /> {errors.position}
+            </p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-white/90 mb-2">
+            E-Mail <span className="text-realcore-gold">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
+              errors.email ? 'border-red-500' : 'border-white/20'
+            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            placeholder="ihre.email@beispiel.de"
+          />
+          {errors.email && (
+            <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+              <AlertCircle size={14} /> {errors.email}
+            </p>
+          )}
+        </div>
+
+        {/* Donation Selection */}
+        <div>
+          <label className="block text-sm font-medium text-white/90 mb-4">
+            Spendenauswahl <span className="text-realcore-gold">*</span>
+          </label>
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Lichtblicke Option */}
+            <label
+              className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
+                formData.spendenauswahl === 'lichtblicke'
+                  ? 'bg-yellow-500/20 border-2 border-yellow-500'
+                  : 'bg-white/5 border-2 border-white/10 hover:border-white/30'
+              }`}
+            >
+              <input
+                type="radio"
+                name="spendenauswahl"
+                value="lichtblicke"
+                checked={formData.spendenauswahl === 'lichtblicke'}
+                onChange={handleChange}
+                className="sr-only"
+              />
+              <div className="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                <Building2 className="text-yellow-400" size={24} />
+              </div>
+              <div>
+                <div className="font-semibold text-white">Lichtblicke e.V.</div>
+                <div className="text-sm text-white/60">Hilfe für Kinder in NRW</div>
+              </div>
+              {formData.spendenauswahl === 'lichtblicke' && (
+                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
+            </label>
+
+            {/* Diospi Suyana Option */}
+            <label
+              className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
+                formData.spendenauswahl === 'diospi-suyana'
+                  ? 'bg-emerald-500/20 border-2 border-emerald-500'
+                  : 'bg-white/5 border-2 border-white/10 hover:border-white/30'
+              }`}
+            >
+              <input
+                type="radio"
+                name="spendenauswahl"
+                value="diospi-suyana"
+                checked={formData.spendenauswahl === 'diospi-suyana'}
+                onChange={handleChange}
+                className="sr-only"
+              />
+              <div className="w-12 h-12 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                <Cross className="text-emerald-400" size={24} />
+              </div>
+              <div>
+                <div className="font-semibold text-white">Diospi Suyana</div>
+                <div className="text-sm text-white/60">Krankenhaus in Peru</div>
+              </div>
+              {formData.spendenauswahl === 'diospi-suyana' && (
+                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
+            </label>
+          </div>
+          {errors.spendenauswahl && (
+            <p className="mt-2 text-sm text-red-400 flex items-center gap-1">
+              <AlertCircle size={14} /> {errors.spendenauswahl}
+            </p>
+          )}
+        </div>
+
+        {/* Terms and Conditions */}
+        <div className="space-y-4 pt-4 border-t border-white/10">
+          {/* Teilnahmebedingungen Checkbox */}
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <div className="relative mt-0.5">
+              <input
+                type="checkbox"
+                name="teilnahmebedingungen"
+                checked={formData.teilnahmebedingungen}
+                onChange={handleChange}
+                className="sr-only peer"
+              />
+              <div
+                className={`w-5 h-5 rounded border-2 ${
+                  errors.teilnahmebedingungen ? 'border-red-500' : 'border-white/30'
+                } peer-checked:bg-realcore-gold peer-checked:border-realcore-gold transition-colors flex items-center justify-center`}
+              >
+                <svg
+                  className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+            <span className="text-sm text-white/80">
+              Ich habe die{' '}
+              <a
+                href="/teilnahmebedingungen"
+                target="_blank"
+                className="text-realcore-gold hover:underline inline-flex items-center gap-1"
+              >
+                Teilnahmebedingungen <ExternalLink size={12} />
+              </a>{' '}
+              gelesen und akzeptiere sie. <span className="text-realcore-gold">*</span>
+            </span>
+          </label>
+          {errors.teilnahmebedingungen && (
+            <p className="text-sm text-red-400 flex items-center gap-1 ml-8">
+              <AlertCircle size={14} /> {errors.teilnahmebedingungen}
+            </p>
+          )}
+
+          {/* Privacy Notice (Information only) */}
+          <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+            <p className="text-sm text-white/70">
+              Die Datenschutzhinweise zu diesem Gewinnspiel finden Sie unter:{' '}
+              <a
+                href="/datenschutz"
+                target="_blank"
+                className="text-realcore-gold hover:underline inline-flex items-center gap-1"
+              >
+                Datenschutzhinweise <ExternalLink size={12} />
+              </a>
+            </p>
+          </div>
+        </div>
+
+        {/* Error Message */}
+        {submitStatus === 'error' && (
+          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+            <p className="text-red-300 text-sm flex items-center gap-2">
+              <AlertCircle size={16} />
+              Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+            </p>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full py-4 px-6 rounded-xl gold-gradient text-realcore-primary font-semibold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" size={20} />
+              Wird gesendet...
+            </>
+          ) : (
+            <>
+              <Send size={20} />
+              Jetzt teilnehmen
+            </>
+          )}
+        </button>
+
+        <p className="text-center text-sm text-white/50">
+          Mit dem Absenden nehmen Sie automatisch am Gewinnspiel teil.
+        </p>
+      </div>
+    </form>
+  );
+}
