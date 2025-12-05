@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, Gift, Star, TreePine, Sparkles, Building2, Cross, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Heart, Gift, Star, TreePine, Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import DonationForm from '../components/DonationForm';
 
@@ -115,8 +115,14 @@ export default function Home() {
           {/* Lichtblicke e.V. */}
           <div className="card-gradient rounded-2xl p-8 hover-lift">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-xl bg-yellow-100 flex items-center justify-center">
-                <Building2 className="text-yellow-600" size={32} />
+              <div className="w-20 h-16 rounded-xl bg-white flex items-center justify-center p-2">
+                <Image
+                  src="https://lichtblicke.de/assets/uploads/logos/libli_logo_weit.png"
+                  alt="Lichtblicke e.V. Logo"
+                  width={160}
+                  height={60}
+                  className="w-full h-auto object-contain"
+                />
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-800">Lichtblicke e.V.</h3>
@@ -145,8 +151,14 @@ export default function Home() {
           {/* Diospi Suyana */}
           <div className="card-gradient rounded-2xl p-8 hover-lift">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <Cross className="text-emerald-600" size={32} />
+              <div className="w-20 h-16 rounded-xl bg-white flex items-center justify-center p-2">
+                <Image
+                  src="https://www.diospi-suyana.de/wp-content/uploads/2020/02/Logo_DS_2020-c.png"
+                  alt="Diospi Suyana Logo"
+                  width={160}
+                  height={60}
+                  className="w-full h-auto object-contain"
+                />
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-800">Diospi Suyana</h3>

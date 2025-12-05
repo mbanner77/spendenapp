@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, Loader2, AlertCircle, Building2, Cross, ExternalLink } from 'lucide-react';
+import { Send, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 
 interface FormData {
   name: string;
@@ -232,8 +233,14 @@ export default function DonationForm() {
                 onChange={handleChange}
                 className="sr-only"
               />
-              <div className="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                <Building2 className="text-yellow-600" size={24} />
+              <div className="w-14 h-12 rounded-lg bg-white flex items-center justify-center flex-shrink-0 p-1">
+                <Image
+                  src="https://lichtblicke.de/assets/uploads/logos/libli_logo_weit.png"
+                  alt="Lichtblicke e.V."
+                  width={100}
+                  height={40}
+                  className="w-full h-auto object-contain"
+                />
               </div>
               <div>
                 <div className="font-semibold text-gray-800">Lichtblicke e.V.</div>
@@ -268,8 +275,14 @@ export default function DonationForm() {
                 onChange={handleChange}
                 className="sr-only"
               />
-              <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                <Cross className="text-emerald-600" size={24} />
+              <div className="w-14 h-12 rounded-lg bg-white flex items-center justify-center flex-shrink-0 p-1">
+                <Image
+                  src="https://www.diospi-suyana.de/wp-content/uploads/2020/02/Logo_DS_2020-c.png"
+                  alt="Diospi Suyana"
+                  width={100}
+                  height={40}
+                  className="w-full h-auto object-contain"
+                />
               </div>
               <div>
                 <div className="font-semibold text-gray-800">Diospi Suyana</div>

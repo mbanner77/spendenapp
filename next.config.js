@@ -8,6 +8,16 @@ const nextConfig = {
         hostname: 'realcore.info',
         pathname: '/bilder/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lichtblicke.de',
+        pathname: '/assets/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.diospi-suyana.de',
+        pathname: '/wp-content/**',
+      },
     ],
   },
 }
