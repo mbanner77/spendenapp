@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { insertSubmission, initDatabase } from '../../../lib/db';
 
 const CONFIG_FILE = join(process.cwd(), 'smtp-config.json');
 
@@ -120,7 +121,7 @@ Zeitstempel: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
   <div class="container">
     <div class="header">
       <h1 style="margin: 0;">🎄 Neue Gewinnspiel-Teilnahme</h1>
-      <p style="margin: 10px 0 0 0; opacity: 0.9;">RealCore Weihnachtsspende 2024</p>
+      <p style="margin: 10px 0 0 0; opacity: 0.9;">RealCore Weihnachtsspende 2025</p>
     </div>
     <div class="content">
       <h2 style="color: #1e3a5f; margin-top: 0;">Persönliche Daten</h2>
@@ -139,12 +140,30 @@ Zeitstempel: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
       </p>
     </div>
     <div class="footer">
-      © 2024 RealCore Group GmbH - Weihnachtsspende Gewinnspiel
+      © 2025 RealCore Group GmbH - Weihnachtsspende Gewinnspiel
     </div>
   </div>
 </body>
 </html>
     `.trim();
+
+    // Save to database if DATABASE_URL is configured
+    if (process.env.DATABASE_URL) {
+      try {
+        await initDatabase();
+        await insertSubmission({
+          name: data.name,
+          firma: data.firma,
+          position: data.position,
+          email: data.email,
+          spendenauswahl: data.spendenauswahl,
+        });
+        console.log('Submission saved to database');
+      } catch (dbError) {
+        console.error('Database error:', dbError);
+        // Continue even if database fails - we'll still try to send email
+      }
+    }
 
     // Try to send email if SMTP is configured (via env vars or config file)
     const smtpConfig = getSMTPConfig();

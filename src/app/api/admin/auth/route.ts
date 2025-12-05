@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const ADMIN_PASSWORD = 'RealCore2025!';
-const SESSION_TOKEN = 'rc_admin_session_2024';
+const SESSION_TOKEN = 'rc_admin_session_2025';
 
 export async function POST(request: NextRequest) {
   try {

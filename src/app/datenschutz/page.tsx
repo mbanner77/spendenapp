@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Datenschutzhinweise</h1>
-            <p className="text-white/60">RealCore Weihnachtsgewinnspiel 2024</p>
+            <p className="text-white/60">RealCore Weihnachtsgewinnspiel 2025</p>
           </div>
         </div>
       </header>
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
 
             <div className="border-t border-white/20 pt-6 mt-8">
               <p className="text-white/60 text-sm">
-                Stand: Dezember 2024<br />
+                Stand: Dezember 2025<br />
                 RealCore Group GmbH
               </p>
             </div>
@@ -139,7 +139,7 @@ export default function PrivacyPage() {
             />
           </div>
           <p className="text-center mt-2 text-sm text-white/40">
-            © 2024 RealCore Group GmbH. Alle Rechte vorbehalten.
+            © 2025 RealCore Group GmbH. Alle Rechte vorbehalten.
           </p>
         </div>
       </footer>

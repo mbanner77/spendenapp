@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-const SESSION_TOKEN = 'rc_admin_session_2024';
+const SESSION_TOKEN = 'rc_admin_session_2025';
 const CONFIG_FILE = join(process.cwd(), 'smtp-config.json');
 
 interface SMTPConfig {

@@ -103,7 +103,7 @@ export default function ThankYouPage() {
             />
           </div>
           <p className="text-sm text-white/40">
-            © 2024 RealCore Group GmbH. Alle Rechte vorbehalten.
+            © 2025 RealCore Group GmbH. Alle Rechte vorbehalten.
           </p>
         </div>
       </div>

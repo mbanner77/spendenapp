@@ -120,7 +120,7 @@ export default function DonationForm() {
       <div className="space-y-6">
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-white/90 mb-2">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
             Name (Titel, Vor- und Nachname) <span className="text-realcore-gold">*</span>
           </label>
           <input
@@ -129,9 +129,9 @@ export default function DonationForm() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
-              errors.name ? 'border-red-500' : 'border-white/20'
-            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            className={`w-full px-4 py-3 rounded-lg bg-white border ${
+              errors.name ? 'border-red-500' : 'border-gray-800'
+            } text-gray-800 placeholder-gray-400 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
             placeholder="z.B. Dr. Max Mustermann"
           />
           {errors.name && (
@@ -143,7 +143,7 @@ export default function DonationForm() {
 
         {/* Firma */}
         <div>
-          <label htmlFor="firma" className="block text-sm font-medium text-white/90 mb-2">
+          <label htmlFor="firma" className="block text-sm font-medium text-gray-700 mb-2">
             Firma <span className="text-realcore-gold">*</span>
           </label>
           <input
@@ -152,9 +152,9 @@ export default function DonationForm() {
             name="firma"
             value={formData.firma}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
-              errors.firma ? 'border-red-500' : 'border-white/20'
-            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            className={`w-full px-4 py-3 rounded-lg bg-white border ${
+              errors.firma ? 'border-red-500' : 'border-gray-800'
+            } text-gray-800 placeholder-gray-400 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
             placeholder="Name Ihres Unternehmens"
           />
           {errors.firma && (
@@ -166,7 +166,7 @@ export default function DonationForm() {
 
         {/* Position */}
         <div>
-          <label htmlFor="position" className="block text-sm font-medium text-white/90 mb-2">
+          <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-2">
             Position <span className="text-realcore-gold">*</span>
           </label>
           <input
@@ -175,9 +175,9 @@ export default function DonationForm() {
             name="position"
             value={formData.position}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
-              errors.position ? 'border-red-500' : 'border-white/20'
-            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            className={`w-full px-4 py-3 rounded-lg bg-white border ${
+              errors.position ? 'border-red-500' : 'border-gray-800'
+            } text-gray-800 placeholder-gray-400 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
             placeholder="Ihre Berufsbezeichnung"
           />
           {errors.position && (
@@ -189,7 +189,7 @@ export default function DonationForm() {
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-white/90 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             E-Mail <span className="text-realcore-gold">*</span>
           </label>
           <input
@@ -198,9 +198,9 @@ export default function DonationForm() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg bg-white/10 border ${
-              errors.email ? 'border-red-500' : 'border-white/20'
-            } text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
+            className={`w-full px-4 py-3 rounded-lg bg-white border ${
+              errors.email ? 'border-red-500' : 'border-gray-800'
+            } text-gray-800 placeholder-gray-400 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors`}
             placeholder="ihre.email@beispiel.de"
           />
           {errors.email && (
@@ -212,7 +212,7 @@ export default function DonationForm() {
 
         {/* Donation Selection */}
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-4">
             Spendenauswahl <span className="text-realcore-gold">*</span>
           </label>
           <div className="grid md:grid-cols-2 gap-4">
@@ -220,8 +220,8 @@ export default function DonationForm() {
             <label
               className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                 formData.spendenauswahl === 'lichtblicke'
-                  ? 'bg-yellow-500/20 border-2 border-yellow-500'
-                  : 'bg-white/5 border-2 border-white/10 hover:border-white/30'
+                  ? 'bg-yellow-50 border-2 border-yellow-500'
+                  : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-400'
               }`}
             >
               <input
@@ -232,12 +232,12 @@ export default function DonationForm() {
                 onChange={handleChange}
                 className="sr-only"
               />
-              <div className="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
-                <Building2 className="text-yellow-400" size={24} />
+              <div className="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                <Building2 className="text-yellow-600" size={24} />
               </div>
               <div>
-                <div className="font-semibold text-white">Lichtblicke e.V.</div>
-                <div className="text-sm text-white/60">Hilfe für Kinder in NRW</div>
+                <div className="font-semibold text-gray-800">Lichtblicke e.V.</div>
+                <div className="text-sm text-gray-500">Hilfe für Kinder in NRW</div>
               </div>
               {formData.spendenauswahl === 'lichtblicke' && (
                 <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center">
@@ -256,8 +256,8 @@ export default function DonationForm() {
             <label
               className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                 formData.spendenauswahl === 'diospi-suyana'
-                  ? 'bg-emerald-500/20 border-2 border-emerald-500'
-                  : 'bg-white/5 border-2 border-white/10 hover:border-white/30'
+                  ? 'bg-emerald-50 border-2 border-emerald-500'
+                  : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-400'
               }`}
             >
               <input
@@ -268,12 +268,12 @@ export default function DonationForm() {
                 onChange={handleChange}
                 className="sr-only"
               />
-              <div className="w-12 h-12 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                <Cross className="text-emerald-400" size={24} />
+              <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <Cross className="text-emerald-600" size={24} />
               </div>
               <div>
-                <div className="font-semibold text-white">Diospi Suyana</div>
-                <div className="text-sm text-white/60">Krankenhaus in Peru</div>
+                <div className="font-semibold text-gray-800">Diospi Suyana</div>
+                <div className="text-sm text-gray-500">Krankenhaus in Peru</div>
               </div>
               {formData.spendenauswahl === 'diospi-suyana' && (
                 <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
@@ -296,7 +296,7 @@ export default function DonationForm() {
         </div>
 
         {/* Terms and Conditions */}
-        <div className="space-y-4 pt-4 border-t border-white/10">
+        <div className="space-y-4 pt-4 border-t border-gray-200">
           {/* Teilnahmebedingungen Checkbox */}
           <label className="flex items-start gap-3 cursor-pointer group">
             <div className="relative mt-0.5">
@@ -309,7 +309,7 @@ export default function DonationForm() {
               />
               <div
                 className={`w-5 h-5 rounded border-2 ${
-                  errors.teilnahmebedingungen ? 'border-red-500' : 'border-white/30'
+                  errors.teilnahmebedingungen ? 'border-red-500' : 'border-gray-400'
                 } peer-checked:bg-realcore-gold peer-checked:border-realcore-gold transition-colors flex items-center justify-center`}
               >
                 <svg
@@ -325,7 +325,7 @@ export default function DonationForm() {
                 </svg>
               </div>
             </div>
-            <span className="text-sm text-white/80">
+            <span className="text-sm text-gray-600">
               Ich habe die{' '}
               <a
                 href="/teilnahmebedingungen"
@@ -344,8 +344,8 @@ export default function DonationForm() {
           )}
 
           {/* Privacy Notice (Information only) */}
-          <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-            <p className="text-sm text-white/70">
+          <div className="danke-box rounded-lg p-4">
+            <p className="text-sm text-gray-600">
               Die Datenschutzhinweise zu diesem Gewinnspiel finden Sie unter:{' '}
               <a
                 href="/datenschutz"
@@ -360,8 +360,8 @@ export default function DonationForm() {
 
         {/* Error Message */}
         {submitStatus === 'error' && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
-            <p className="text-red-300 text-sm flex items-center gap-2">
+          <div className="bg-red-100 border border-red-300 rounded-lg p-4">
+            <p className="text-red-600 text-sm flex items-center gap-2">
               <AlertCircle size={16} />
               Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
             </p>
@@ -387,7 +387,7 @@ export default function DonationForm() {
           )}
         </button>
 
-        <p className="text-center text-sm text-white/50">
+        <p className="text-center text-sm text-gray-500">
           Mit dem Absenden nehmen Sie automatisch am Gewinnspiel teil.
         </p>
       </div>

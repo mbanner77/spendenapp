@@ -1,3 +1,10 @@
+databases:
+  - name: spendenapp-db
+    region: frankfurt
+    plan: free
+    databaseName: spendenapp
+    user: spendenapp
+
 services:
   - type: web
     name: realcore-spendenapp
@@ -9,6 +16,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: spendenapp-db
+          property: connectionString
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
