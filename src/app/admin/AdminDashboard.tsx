@@ -191,7 +191,18 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: data.message });
+        let successText = data.message;
+        if (data.details) {
+          successText += `\n📧 Message-ID: ${data.details.messageId || 'N/A'}`;
+          successText += `\n📬 Server-Antwort: ${data.details.response || 'N/A'}`;
+          if (data.details.accepted?.length > 0) {
+            successText += `\n✅ Akzeptiert: ${data.details.accepted.join(', ')}`;
+          }
+          if (data.details.rejected?.length > 0) {
+            successText += `\n❌ Abgelehnt: ${data.details.rejected.join(', ')}`;
+          }
+        }
+        setMessage({ type: 'success', text: successText });
       } else {
         setMessage({ type: 'error', text: data.error });
       }
@@ -269,14 +280,16 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         {/* Message */}
         {message && (
           <div
-            className={`rounded-xl p-4 mb-6 flex items-center gap-3 ${
+            className={`rounded-xl p-4 mb-6 flex items-start gap-3 ${
               message.type === 'success'
                 ? 'bg-green-100 border border-green-300 text-green-700'
                 : 'bg-red-100 border border-red-300 text-red-700'
             }`}
           >
-            {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-            {message.text}
+            <span className="flex-shrink-0 mt-0.5">
+              {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+            </span>
+            <span className="whitespace-pre-line text-sm">{message.text}</span>
           </div>
         )}
 

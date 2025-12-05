@@ -83,18 +83,21 @@ export async function POST(request: NextRequest) {
     // Test the connection first
     await transporter.verify();
 
-    // SiteGround requires MAIL FROM to match the authenticated user
+    // Enhanced mail options with additional headers for better deliverability
     const mailOptions: {
       from: string;
       to: string;
+      replyTo: string;
       subject: string;
       text: string;
       html: string;
+      headers?: Record<string, string>;
       envelope?: { from: string; to: string };
     } = {
-      from: `"RealCore Spendenapp" <${config.user}>`,
+      from: `"RealCore Weihnachtsaktion" <${config.user}>`,
       to: recipient,
-      subject: '🎄 RealCore Spendenapp - Test-E-Mail',
+      replyTo: config.user,
+      subject: 'RealCore Spendenapp - Test-E-Mail',
       text: `Dies ist eine Test-E-Mail von der RealCore Spendenapp.
 
 Wenn Sie diese E-Mail erhalten haben, ist Ihre SMTP-Konfiguration korrekt eingerichtet.
@@ -147,11 +150,24 @@ Gesendet am: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
       };
     }
 
-    await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    
+    console.log('Email sent successfully:', {
+      messageId: info.messageId,
+      response: info.response,
+      accepted: info.accepted,
+      rejected: info.rejected,
+    });
 
     return NextResponse.json({ 
       success: true, 
-      message: `Test-E-Mail erfolgreich an ${recipient} gesendet` 
+      message: `Test-E-Mail erfolgreich an ${recipient} gesendet`,
+      details: {
+        messageId: info.messageId,
+        response: info.response,
+        accepted: info.accepted,
+        rejected: info.rejected,
+      } 
     });
 
   } catch (error: any) {
