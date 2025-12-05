@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Heart, Gift, Star, TreePine, Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Heart, Gift, Star, TreePine, Sparkles, ExternalLink, Users } from 'lucide-react';
 import Image from 'next/image';
 import DonationForm from '../components/DonationForm';
+import Countdown from '../components/Countdown';
 
 export default function Home() {
   return (
@@ -56,9 +56,39 @@ export default function Home() {
             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
               Gemeinsam machen wir die Welt ein kleines Stück besser
             </p>
+            
+            {/* CTA Button */}
+            <a
+              href="#formular"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl gold-gradient text-realcore-primary font-semibold text-lg btn-gold shadow-lg hover:shadow-xl transition-all mb-8"
+            >
+              <Gift size={22} />
+              Jetzt teilnehmen & gewinnen
+            </a>
+            
+            {/* Quick Stats */}
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+                <Users className="text-realcore-gold" size={18} />
+                <span className="text-gray-600 text-sm">Jeder Euro zählt</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+                <Gift className="text-realcore-gold" size={18} />
+                <span className="text-gray-600 text-sm">12.000€ Gesamtgewinne</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+                <Heart className="text-realcore-gold" size={18} />
+                <span className="text-gray-600 text-sm">2 Spendenpartner</span>
+              </div>
+            </div>
           </div>
         </div>
       </header>
+      
+      {/* Countdown Section */}
+      <section className="max-w-2xl mx-auto px-4 -mt-4 mb-8 relative z-10">
+        <Countdown />
+      </section>
 
       {/* Message Section */}
       <section className="max-w-4xl mx-auto px-4 py-8">

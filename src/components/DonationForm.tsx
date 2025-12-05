@@ -115,8 +115,39 @@ export default function DonationForm() {
     }
   };
 
+  // Calculate form completion progress
+  const getProgress = () => {
+    let completed = 0;
+    if (formData.name.trim()) completed++;
+    if (formData.firma.trim()) completed++;
+    if (formData.position.trim()) completed++;
+    if (formData.email.trim()) completed++;
+    if (formData.spendenauswahl) completed++;
+    if (formData.teilnahmebedingungen) completed++;
+    return Math.round((completed / 6) * 100);
+  };
+
+  const progress = getProgress();
+
   return (
     <form onSubmit={handleSubmit} className="card-gradient rounded-2xl p-8 md:p-10">
+      {/* Progress Indicator */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium text-gray-600">Fortschritt</span>
+          <span className="text-sm font-bold text-realcore-gold">{progress}%</span>
+        </div>
+        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div 
+            className="h-full progress-bar rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-xs text-gray-400 mt-1">
+          {progress < 100 ? 'Füllen Sie alle Pflichtfelder aus' : '✓ Alle Felder ausgefüllt'}
+        </p>
+      </div>
+
       {/* Personal Information */}
       <div className="space-y-6">
         {/* Name */}
@@ -384,8 +415,8 @@ export default function DonationForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full py-4 px-6 rounded-xl gold-gradient text-realcore-primary font-semibold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isSubmitting || progress < 100}
+          className={`w-full py-4 px-6 rounded-xl gold-gradient text-realcore-primary font-semibold text-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${progress === 100 ? 'btn-gold pulse-gold' : ''}`}
         >
           {isSubmitting ? (
             <>

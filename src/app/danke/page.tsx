@@ -1,10 +1,25 @@
-import { Heart, CheckCircle2, Gift, Star, TreePine, Sparkles, Home } from 'lucide-react';
+'use client';
+
+import { Heart, CheckCircle2, Gift, Star, TreePine, Sparkles, Home, Share2, Copy, Check } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
+import Confetti from '../../components/Confetti';
 
 export default function ThankYouPage() {
+  const [copied, setCopied] = useState(false);
+  
+  const shareUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12">
+      <Confetti />
       {/* Decorative Elements */}
       <div className="fixed top-10 left-10 animate-float opacity-30">
         <TreePine size={48} className="text-realcore-gold" />
@@ -80,6 +95,30 @@ export default function ThankYouPage() {
           <p className="text-realcore-gold font-semibold mb-8">
             Ihr Team von der RealCore Group GmbH
           </p>
+          
+          {/* Share Section */}
+          <div className="bg-gray-50 rounded-xl p-4 mb-8 border border-gray-200">
+            <p className="text-sm text-gray-600 mb-3 flex items-center justify-center gap-2">
+              <Share2 size={16} />
+              Teilen Sie diese Aktion mit Kollegen
+            </p>
+            <button
+              onClick={handleCopyLink}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors text-sm"
+            >
+              {copied ? (
+                <>
+                  <Check size={16} className="text-green-500" />
+                  Link kopiert!
+                </>
+              ) : (
+                <>
+                  <Copy size={16} />
+                  Link kopieren
+                </>
+              )}
+            </button>
+          </div>
 
           {/* Back to Home Button */}
           <Link
