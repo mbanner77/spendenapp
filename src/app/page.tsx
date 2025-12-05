@@ -288,6 +288,89 @@ export default function Home() {
         <DonationForm />
       </section>
 
+      {/* FAQ Section */}
+      <section className="max-w-4xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+            Häufige Fragen
+          </h2>
+          <p className="text-gray-500">Alles was Sie wissen müssen</p>
+        </div>
+        
+        <div className="space-y-4">
+          <details className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50 transition-colors">
+              <span className="font-semibold text-gray-800">Wie funktioniert das Gewinnspiel?</span>
+              <span className="text-realcore-gold transition-transform group-open:rotate-180">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </summary>
+            <div className="px-5 pb-5 text-gray-600">
+              Füllen Sie einfach das Teilnahmeformular aus und wählen Sie Ihre bevorzugte Spendenorganisation. 
+              Nach dem Teilnahmeschluss am 31.12.2025 werden die Gewinner per Losverfahren ermittelt und per E-Mail benachrichtigt.
+            </div>
+          </details>
+          
+          <details className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50 transition-colors">
+              <span className="font-semibold text-gray-800">Was kann ich gewinnen?</span>
+              <span className="text-realcore-gold transition-transform group-open:rotate-180">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </summary>
+            <div className="px-5 pb-5 text-gray-600">
+              Es werden drei TechHub Gutscheine verlost: 1. Preis: 5.000€, 2. Preis: 4.000€, 3. Preis: 3.000€. 
+              Die Gutscheine können für Beratungs- und Implementierungsleistungen eingelöst werden.
+            </div>
+          </details>
+          
+          <details className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50 transition-colors">
+              <span className="font-semibold text-gray-800">Wie wird meine Spendenauswahl verwendet?</span>
+              <span className="text-realcore-gold transition-transform group-open:rotate-180">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </summary>
+            <div className="px-5 pb-5 text-gray-600">
+              Die Spendensumme wird entsprechend der Auswahl aller Teilnehmer aufgeteilt. 
+              Je mehr Teilnehmer eine Organisation wählen, desto mehr erhält diese Organisation von der Gesamtspende.
+            </div>
+          </details>
+          
+          <details className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50 transition-colors">
+              <span className="font-semibold text-gray-800">Wer kann teilnehmen?</span>
+              <span className="text-realcore-gold transition-transform group-open:rotate-180">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </summary>
+            <div className="px-5 pb-5 text-gray-600">
+              Teilnahmeberechtigt sind alle natürlichen Personen ab 18 Jahren mit Wohnsitz in Deutschland. 
+              Mitarbeiter der RealCore Group GmbH und deren Angehörige sind von der Teilnahme ausgeschlossen.
+            </div>
+          </details>
+        </div>
+      </section>
+
+      {/* Back to Top Button */}
+      <a
+        href="#"
+        className="fixed bottom-6 right-6 w-12 h-12 rounded-full gold-gradient shadow-lg flex items-center justify-center text-realcore-primary hover:scale-110 transition-transform z-40"
+        aria-label="Nach oben"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+      </a>
+
       {/* Footer */}
       <footer className="border-t border-gray-200 mt-12 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 py-8">

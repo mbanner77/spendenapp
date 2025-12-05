@@ -21,6 +21,15 @@ import {
   Building2,
   Cross,
   Calendar,
+  Search,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  CheckSquare,
+  Square,
+  X,
+  Filter,
+  TrendingUp,
 } from 'lucide-react';
 
 interface SMTPConfig {
@@ -78,6 +87,16 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [isLoadingSubmissions, setIsLoadingSubmissions] = useState(false);
+  
+  // Search, sort, and selection state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState<'created_at' | 'name' | 'firma' | 'spendenauswahl'>('created_at');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [filterOrg, setFilterOrg] = useState<'all' | 'lichtblicke' | 'diospi-suyana'>('all');
+  
+  // Confirmation dialog
+  const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id?: number; bulk?: boolean }>({ show: false });
 
   useEffect(() => {
     loadConfig();
@@ -213,6 +232,85 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     }
   };
 
+  // Filter and sort submissions
+  const filteredSubmissions = submissions
+    .filter(sub => {
+      // Search filter
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = !searchTerm || 
+        sub.name.toLowerCase().includes(searchLower) ||
+        sub.firma.toLowerCase().includes(searchLower) ||
+        sub.email.toLowerCase().includes(searchLower) ||
+        sub.position.toLowerCase().includes(searchLower);
+      
+      // Organization filter
+      const matchesOrg = filterOrg === 'all' || sub.spendenauswahl === filterOrg;
+      
+      return matchesSearch && matchesOrg;
+    })
+    .sort((a, b) => {
+      let comparison = 0;
+      if (sortField === 'created_at') {
+        comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      } else if (sortField === 'name') {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortField === 'firma') {
+        comparison = a.firma.localeCompare(b.firma);
+      } else if (sortField === 'spendenauswahl') {
+        comparison = a.spendenauswahl.localeCompare(b.spendenauswahl);
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+  // Selection handlers
+  const toggleSelect = (id: number) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredSubmissions.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredSubmissions.map(s => s.id)));
+    }
+  };
+
+  const handleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (deleteConfirm.bulk) {
+      // Bulk delete
+      const idsToDelete = Array.from(selectedIds);
+      for (const id of idsToDelete) {
+        await handleDeleteSubmission(id);
+      }
+      setSelectedIds(new Set());
+    } else if (deleteConfirm.id) {
+      await handleDeleteSubmission(deleteConfirm.id);
+    }
+    setDeleteConfirm({ show: false });
+  };
+
+  const SortIcon = ({ field }: { field: typeof sortField }) => {
+    if (sortField !== field) return <ArrowUpDown size={14} className="text-gray-400" />;
+    return sortDirection === 'asc' 
+      ? <ArrowUp size={14} className="text-realcore-gold" />
+      : <ArrowDown size={14} className="text-realcore-gold" />;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -222,6 +320,43 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   }
 
   return (
+    <>
+    {/* Delete Confirmation Modal */}
+    {deleteConfirm.show && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl animate-fadeInUp">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+              <Trash2 className="text-red-600" size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-800">Löschen bestätigen</h3>
+              <p className="text-gray-500 text-sm">Diese Aktion kann nicht rückgängig gemacht werden</p>
+            </div>
+          </div>
+          <p className="text-gray-600 mb-6">
+            {deleteConfirm.bulk 
+              ? `Möchten Sie wirklich ${selectedIds.size} Einträge löschen?`
+              : 'Möchten Sie diesen Eintrag wirklich löschen?'}
+          </p>
+          <div className="flex gap-3 justify-end">
+            <button
+              onClick={() => setDeleteConfirm({ show: false })}
+              className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+            >
+              Abbrechen
+            </button>
+            <button
+              onClick={confirmDelete}
+              className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center gap-2"
+            >
+              <Trash2 size={16} />
+              Löschen
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     <main className="min-h-screen py-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -357,23 +492,83 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               </div>
             )}
 
-            {/* Actions */}
-            <div className="flex gap-3">
-              <button
-                onClick={loadSubmissions}
-                disabled={isLoadingSubmissions}
-                className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors flex items-center gap-2"
-              >
-                <RefreshCw size={18} className={isLoadingSubmissions ? 'animate-spin' : ''} />
-                Aktualisieren
-              </button>
-              <button
-                onClick={handleExport}
-                className="px-4 py-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-700 transition-colors flex items-center gap-2"
-              >
-                <Download size={18} />
-                CSV Export
-              </button>
+            {/* Search, Filter and Actions Bar */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+              <div className="flex flex-col lg:flex-row gap-4">
+                {/* Search */}
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Suchen nach Name, Firma, E-Mail..."
+                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+                
+                {/* Organization Filter */}
+                <div className="flex items-center gap-2">
+                  <Filter size={18} className="text-gray-400" />
+                  <select
+                    value={filterOrg}
+                    onChange={(e) => setFilterOrg(e.target.value as typeof filterOrg)}
+                    className="px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors"
+                  >
+                    <option value="all">Alle Organisationen</option>
+                    <option value="lichtblicke">Lichtblicke e.V.</option>
+                    <option value="diospi-suyana">Diospi Suyana</option>
+                  </select>
+                </div>
+                
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={loadSubmissions}
+                    disabled={isLoadingSubmissions}
+                    className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors flex items-center gap-2"
+                  >
+                    <RefreshCw size={16} className={isLoadingSubmissions ? 'animate-spin' : ''} />
+                  </button>
+                  <button
+                    onClick={handleExport}
+                    className="px-3 py-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-700 transition-colors flex items-center gap-2"
+                  >
+                    <Download size={16} />
+                    <span className="hidden sm:inline">Export</span>
+                  </button>
+                  {selectedIds.size > 0 && (
+                    <button
+                      onClick={() => setDeleteConfirm({ show: true, bulk: true })}
+                      className="px-3 py-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 transition-colors flex items-center gap-2"
+                    >
+                      <Trash2 size={16} />
+                      <span className="hidden sm:inline">{selectedIds.size} löschen</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {/* Results info */}
+              <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+                <span>
+                  {filteredSubmissions.length} von {submissions.length} Einträgen
+                  {searchTerm && ` für "${searchTerm}"`}
+                </span>
+                {selectedIds.size > 0 && (
+                  <span className="text-realcore-gold font-medium">
+                    {selectedIds.size} ausgewählt
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Submissions Table */}
@@ -382,38 +577,91 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Firma</th>
+                      <th className="px-3 py-3 text-left">
+                        <button
+                          onClick={toggleSelectAll}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          {selectedIds.size === filteredSubmissions.length && filteredSubmissions.length > 0 
+                            ? <CheckSquare size={18} className="text-realcore-gold" />
+                            : <Square size={18} />}
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left">
+                        <button
+                          onClick={() => handleSort('name')}
+                          className="flex items-center gap-1 text-xs font-semibold text-gray-600 uppercase tracking-wider hover:text-realcore-gold"
+                        >
+                          Name <SortIcon field="name" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left">
+                        <button
+                          onClick={() => handleSort('firma')}
+                          className="flex items-center gap-1 text-xs font-semibold text-gray-600 uppercase tracking-wider hover:text-realcore-gold"
+                        >
+                          Firma <SortIcon field="firma" />
+                        </button>
+                      </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">E-Mail</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Spende</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Datum</th>
+                      <th className="px-4 py-3 text-left">
+                        <button
+                          onClick={() => handleSort('spendenauswahl')}
+                          className="flex items-center gap-1 text-xs font-semibold text-gray-600 uppercase tracking-wider hover:text-realcore-gold"
+                        >
+                          Spende <SortIcon field="spendenauswahl" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left">
+                        <button
+                          onClick={() => handleSort('created_at')}
+                          className="flex items-center gap-1 text-xs font-semibold text-gray-600 uppercase tracking-wider hover:text-realcore-gold"
+                        >
+                          Datum <SortIcon field="created_at" />
+                        </button>
+                      </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aktion</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {submissions.length === 0 ? (
+                    {filteredSubmissions.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                        <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
                           {isLoadingSubmissions ? (
                             <div className="flex items-center justify-center gap-2">
                               <Loader2 className="animate-spin" size={20} />
                               Laden...
                             </div>
+                          ) : searchTerm || filterOrg !== 'all' ? (
+                            'Keine Einträge gefunden'
                           ) : (
                             'Noch keine Teilnahmen vorhanden'
                           )}
                         </td>
                       </tr>
                     ) : (
-                      submissions.map((sub) => (
-                        <tr key={sub.id} className="hover:bg-gray-50">
+                      filteredSubmissions.map((sub) => (
+                        <tr 
+                          key={sub.id} 
+                          className={`hover:bg-gray-50 transition-colors ${selectedIds.has(sub.id) ? 'bg-realcore-gold/5' : ''}`}
+                        >
+                          <td className="px-3 py-3">
+                            <button
+                              onClick={() => toggleSelect(sub.id)}
+                              className="text-gray-400 hover:text-gray-600"
+                            >
+                              {selectedIds.has(sub.id) 
+                                ? <CheckSquare size={18} className="text-realcore-gold" />
+                                : <Square size={18} />}
+                            </button>
+                          </td>
                           <td className="px-4 py-3">
                             <div className="font-medium text-gray-800">{sub.name}</div>
                             <div className="text-xs text-gray-500">{sub.position}</div>
                           </td>
                           <td className="px-4 py-3 text-gray-600">{sub.firma}</td>
                           <td className="px-4 py-3">
-                            <a href={`mailto:${sub.email}`} className="text-blue-600 hover:underline">
+                            <a href={`mailto:${sub.email}`} className="text-blue-600 hover:underline text-sm">
                               {sub.email}
                             </a>
                           </td>
@@ -441,7 +689,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                           </td>
                           <td className="px-4 py-3">
                             <button
-                              onClick={() => handleDeleteSubmission(sub.id)}
+                              onClick={() => setDeleteConfirm({ show: true, id: sub.id })}
                               className="p-2 rounded-lg hover:bg-red-100 text-red-500 transition-colors"
                               title="Löschen"
                             >
@@ -615,5 +863,6 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         )}
       </div>
     </main>
+    </>
   );
 }
