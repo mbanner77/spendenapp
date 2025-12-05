@@ -4,10 +4,19 @@ import { Heart, Gift, Star, TreePine, Sparkles, ExternalLink, Users } from 'luci
 import Image from 'next/image';
 import DonationForm from '../components/DonationForm';
 import Countdown from '../components/Countdown';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Home() {
+  const { t } = useLanguage();
+  
   return (
     <main className="min-h-screen">
+      {/* Language Switcher - Fixed Position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+      
       {/* Header Section */}
       <header className="relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
@@ -41,20 +50,20 @@ export default function Home() {
             {/* Festive Banner */}
             <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-realcore-gold/10 border border-realcore-gold/30 mb-8">
               <Gift className="text-realcore-gold" size={20} />
-              <span className="text-realcore-gold font-medium">Weihnachten 2025</span>
+              <span className="text-realcore-gold font-medium">{t('header.christmas')}</span>
               <Gift className="text-realcore-gold" size={20} />
             </div>
 
             {/* Main Headline */}
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               <span className="bg-gradient-to-r from-gray-800 via-realcore-gold to-gray-800 bg-clip-text text-transparent">
-                Spenden statt Geschenke
+                {t('header.title')}
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Gemeinsam machen wir die Welt ein kleines Stück besser
+              {t('header.subtitle')}
             </p>
             
             {/* CTA Button */}
@@ -63,22 +72,22 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl gold-gradient text-realcore-primary font-semibold text-lg btn-gold shadow-lg hover:shadow-xl transition-all mb-8"
             >
               <Gift size={22} />
-              Jetzt teilnehmen & gewinnen
+              {t('header.cta')}
             </a>
             
             {/* Quick Stats */}
             <div className="flex flex-wrap justify-center gap-4 md:gap-6">
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
                 <Users className="text-realcore-gold" size={18} />
-                <span className="text-gray-600 text-sm">Jeder Euro zählt</span>
+                <span className="text-gray-600 text-sm">{t('header.everyEuroCounts')}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
                 <Gift className="text-realcore-gold" size={18} />
-                <span className="text-gray-600 text-sm">12.000€ Gesamtgewinne</span>
+                <span className="text-gray-600 text-sm">{t('header.totalPrizes')}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
                 <Heart className="text-realcore-gold" size={18} />
-                <span className="text-gray-600 text-sm">2 Spendenpartner</span>
+                <span className="text-gray-600 text-sm">{t('header.partners')}</span>
               </div>
             </div>
           </div>

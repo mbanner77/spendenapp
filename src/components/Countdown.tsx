@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Clock, Calendar } from 'lucide-react';
+import { Clock } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface TimeLeft {
   days: number;
@@ -11,6 +12,7 @@ interface TimeLeft {
 }
 
 export default function Countdown() {
+  const { t } = useLanguage();
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [mounted, setMounted] = useState(false);
   
@@ -59,23 +61,23 @@ export default function Countdown() {
     <div className="bg-gray-50 rounded-xl p-4 md:p-6 border border-gray-200">
       <div className="flex items-center justify-center gap-2 mb-4">
         <Clock className="text-realcore-gold" size={20} />
-        <span className="text-sm font-medium text-gray-700">Teilnahmeschluss: 31.12.2025</span>
+        <span className="text-sm font-medium text-gray-700">{t('countdown.deadline')}</span>
       </div>
       
       <div className="flex justify-center items-center gap-2 md:gap-4">
-        <TimeBox value={timeLeft.days} label="Tage" />
+        <TimeBox value={timeLeft.days} label={t('countdown.days')} />
         <span className="text-2xl font-bold text-realcore-gold mt-[-20px]">:</span>
-        <TimeBox value={timeLeft.hours} label="Stunden" />
+        <TimeBox value={timeLeft.hours} label={t('countdown.hours')} />
         <span className="text-2xl font-bold text-realcore-gold mt-[-20px]">:</span>
-        <TimeBox value={timeLeft.minutes} label="Minuten" />
+        <TimeBox value={timeLeft.minutes} label={t('countdown.minutes')} />
         <span className="text-2xl font-bold text-realcore-gold mt-[-20px] hidden sm:block">:</span>
         <div className="hidden sm:block">
-          <TimeBox value={timeLeft.seconds} label="Sekunden" />
+          <TimeBox value={timeLeft.seconds} label={t('countdown.seconds')} />
         </div>
       </div>
       
       <p className="text-center text-xs text-gray-400 mt-3">
-        Nehmen Sie jetzt teil und sichern Sie sich Ihre Gewinnchance!
+        {t('countdown.participateNow')}
       </p>
     </div>
   );

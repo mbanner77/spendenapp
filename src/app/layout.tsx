@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Providers from '@/components/Providers'
 
 export const metadata: Metadata = {
   title: 'RealCore Weihnachtsspende 2025 | Spenden statt Geschenke',
@@ -17,10 +18,12 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className="font-sans antialiased">
-        <div className="star-overlay" />
-        <div className="relative z-10">
-          {children}
-        </div>
+        <Providers>
+          <div className="star-overlay" />
+          <div className="relative z-10">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   )
