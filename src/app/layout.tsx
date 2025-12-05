@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import Providers from '@/components/Providers'
 
@@ -8,6 +8,24 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'RealCore Spenden',
+  },
+  formatDetection: {
+    telephone: true,
+    email: true,
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
+  themeColor: '#d4af37',
 }
 
 export default function RootLayout({
@@ -16,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de">
-      <body className="font-sans antialiased">
+    <html lang="de" className="scroll-smooth">
+      <body className="font-sans antialiased min-h-screen min-h-[100dvh]">
         <Providers>
           <div className="star-overlay" />
           <div className="relative z-10">

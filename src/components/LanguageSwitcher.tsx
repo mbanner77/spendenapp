@@ -26,17 +26,23 @@ export default function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/80 hover:bg-white border border-gray-200 text-gray-700 transition-all shadow-sm"
+        className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-2 rounded-lg bg-white/90 hover:bg-white border border-gray-200 text-gray-700 transition-all shadow-sm active:scale-95 touch-manipulation"
         aria-label="Change language"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
       >
-        <Globe size={18} className="text-realcore-gold" />
-        <span className="text-lg">{currentLang.flag}</span>
+        <Globe size={16} className="text-realcore-gold sm:w-[18px] sm:h-[18px]" />
+        <span className="text-base sm:text-lg">{currentLang.flag}</span>
         <span className="hidden sm:inline text-sm font-medium">{currentLang.code.toUpperCase()}</span>
-        <ChevronDown size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={14} className={`transition-transform sm:w-4 sm:h-4 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 animate-fadeInUp">
+        <div 
+          className="absolute right-0 mt-2 w-48 sm:w-52 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50 animate-fadeInUp max-h-[70vh] overflow-y-auto"
+          role="listbox"
+          aria-label="Select language"
+        >
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -44,7 +50,9 @@ export default function LanguageSwitcher() {
                 setLanguage(lang.code);
                 setIsOpen(false);
               }}
-              className={`w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-50 transition-colors ${
+              role="option"
+              aria-selected={language === lang.code}
+              className={`w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation ${
                 language === lang.code ? 'bg-realcore-gold/10 text-realcore-gold' : 'text-gray-700'
               }`}
             >

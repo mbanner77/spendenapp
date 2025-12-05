@@ -247,12 +247,12 @@ export default function DonationForm() {
           <label className="block text-sm font-medium text-gray-700 mb-4">
             Spendenauswahl <span className="text-realcore-gold">*</span>
           </label>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Lichtblicke Option */}
             <label
-              className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
+              className={`relative flex items-start gap-3 sm:gap-4 p-4 sm:p-4 rounded-xl cursor-pointer transition-all touch-manipulation active:scale-[0.98] ${
                 formData.spendenauswahl === 'lichtblicke'
-                  ? 'bg-yellow-50 border-2 border-yellow-500'
+                  ? 'bg-yellow-50 border-2 border-yellow-500 shadow-sm'
                   : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-400'
               }`}
             >
@@ -292,9 +292,9 @@ export default function DonationForm() {
 
             {/* Diospi Suyana Option */}
             <label
-              className={`relative flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all ${
+              className={`relative flex items-start gap-3 sm:gap-4 p-4 sm:p-4 rounded-xl cursor-pointer transition-all touch-manipulation active:scale-[0.98] ${
                 formData.spendenauswahl === 'diospi-suyana'
-                  ? 'bg-emerald-50 border-2 border-emerald-500'
+                  ? 'bg-emerald-50 border-2 border-emerald-500 shadow-sm'
                   : 'bg-gray-50 border-2 border-gray-200 hover:border-gray-400'
               }`}
             >
