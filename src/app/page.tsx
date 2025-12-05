@@ -28,7 +28,7 @@ export default function Home() {
             <div className="mb-8">
               <div className="inline-flex items-center gap-3 mb-4">
                 <Image
-                  src="https://realcore.info/bilder/RealCore_Logo.png"
+                  src="https://realcore.info/bilder/RealCore_Logo.jpg"
                   alt="RealCore Group Logo"
                   width={220}
                   height={55}
@@ -294,7 +294,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Image
-                src="https://realcore.info/bilder/RealCore_Logo.png"
+                src="https://realcore.info/bilder/RealCore_Logo.jpg"
                 alt="RealCore Group Logo"
                 width={140}
                 height={35}
