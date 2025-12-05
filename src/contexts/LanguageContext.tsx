@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Language, translations } from '@/lib/translations';
+import { Language, translations as defaultTranslations } from '@/lib/translations';
 
 interface LanguageContextType {
   language: Language;
@@ -13,28 +13,37 @@ interface LanguageContextType {
 const defaultContextValue: LanguageContextType = {
   language: 'de',
   setLanguage: () => {},
-  t: (key: string) => translations['de']?.[key] || key,
+  t: (key: string) => defaultTranslations['de']?.[key] || key,
 };
 
 const LanguageContext = createContext<LanguageContextType>(defaultContextValue);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('de');
-  const [mounted, setMounted] = useState(false);
+  const [customTranslations, setCustomTranslations] = useState<Record<string, Record<string, string>>>({});
 
   useEffect(() => {
-    setMounted(true);
     // Load saved language from localStorage
     const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && translations[savedLang]) {
+    if (savedLang && defaultTranslations[savedLang]) {
       setLanguageState(savedLang);
     } else {
       // Try to detect browser language
       const browserLang = navigator.language.split('-')[0] as Language;
-      if (translations[browserLang]) {
+      if (defaultTranslations[browserLang]) {
         setLanguageState(browserLang);
       }
     }
+    
+    // Load custom translations from API
+    fetch('/api/admin/translations')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.translations) {
+          setCustomTranslations(data.translations);
+        }
+      })
+      .catch(err => console.log('Could not load custom translations:', err));
   }, []);
 
   const setLanguage = (lang: Language) => {
@@ -43,7 +52,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string): string => {
-    return translations[language]?.[key] || translations['de'][key] || key;
+    // First check custom translations, then fall back to defaults
+    return customTranslations[language]?.[key] 
+      || defaultTranslations[language]?.[key] 
+      || customTranslations['de']?.[key]
+      || defaultTranslations['de'][key] 
+      || key;
   };
 
   const contextValue: LanguageContextType = {

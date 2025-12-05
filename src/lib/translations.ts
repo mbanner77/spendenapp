@@ -56,6 +56,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'prizes.second': '2. Preis',
     'prizes.third': '3. Preis',
     'prizes.voucher': 'TechHub Gutschein',
+    'prizes.techhub.title': 'Der RealCore TechHub: Ihr Partner für Technologie-Integration',
+    'prizes.techhub.text1': 'Der RealCore TechHub dient als zentraler Marktplatz für unsere technologieübergreifenden Beratungs- und Implementierungsleistungen. Unser Ziel ist es, Sie mit fundierter Expertise bei der digitalen Transformation zu unterstützen.',
+    'prizes.techhub.text2': 'Wir bieten Ihnen "Starter Packages" an, die Ihnen einen schnellen und planbaren Einstieg in zukunftsweisende Technologien ermöglichen. Dank unserer Festpreis-Garantie können Sie risikofrei in Bereiche wie Künstliche Intelligenz (KI), Cloud-native Entwicklung und Low-Code investieren.',
+    'prizes.techhub.link': 'TechHub entdecken',
     
     // Dankeschön
     'thanks.title': 'Ein herzliches Dankeschön',
@@ -170,6 +174,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'prizes.second': '2nd Prize',
     'prizes.third': '3rd Prize',
     'prizes.voucher': 'TechHub Voucher',
+    'prizes.techhub.title': 'RealCore TechHub: Your Partner for Technology Integration',
+    'prizes.techhub.text1': 'The RealCore TechHub serves as a central marketplace for our cross-technology consulting and implementation services. Our goal is to support you with sound expertise in digital transformation.',
+    'prizes.techhub.text2': 'We offer "Starter Packages" that enable you to quickly and predictably get started with forward-looking technologies. Thanks to our fixed-price guarantee, you can invest risk-free in areas such as Artificial Intelligence (AI), Cloud-native Development, and Low-Code.',
+    'prizes.techhub.link': 'Discover TechHub',
     
     // Dankeschön
     'thanks.title': 'A heartfelt thank you',
@@ -284,6 +292,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'prizes.second': '2. Nagroda',
     'prizes.third': '3. Nagroda',
     'prizes.voucher': 'Bon TechHub',
+    'prizes.techhub.title': 'RealCore TechHub: Twój Partner w Integracji Technologii',
+    'prizes.techhub.text1': 'RealCore TechHub służy jako centralny rynek dla naszych wielotechnologicznych usług doradczych i wdrożeniowych. Naszym celem jest wspieranie Państwa solidną ekspertyzą w transformacji cyfrowej.',
+    'prizes.techhub.text2': 'Oferujemy "Pakiety Startowe", które umożliwiają szybkie i przewidywalne rozpoczęcie pracy z przyszłościowymi technologiami. Dzięki naszej gwarancji stałej ceny możesz bez ryzyka inwestować w obszary takie jak Sztuczna Inteligencja (AI), Rozwój Cloud-native i Low-Code.',
+    'prizes.techhub.link': 'Odkryj TechHub',
     
     // Dankeschön
     'thanks.title': 'Serdeczne podziękowania',
@@ -398,6 +410,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'prizes.second': '2do Premio',
     'prizes.third': '3er Premio',
     'prizes.voucher': 'Vale TechHub',
+    'prizes.techhub.title': 'RealCore TechHub: Su socio para la integración tecnológica',
+    'prizes.techhub.text1': 'El RealCore TechHub sirve como mercado central para nuestros servicios de consultoría e implementación multitecnológica. Nuestro objetivo es apoyarle con experiencia sólida en la transformación digital.',
+    'prizes.techhub.text2': 'Ofrecemos "Paquetes de Inicio" que le permiten comenzar rápida y previsiblemente con tecnologías de vanguardia. Gracias a nuestra garantía de precio fijo, puede invertir sin riesgo en áreas como Inteligencia Artificial (IA), Desarrollo Cloud-native y Low-Code.',
+    'prizes.techhub.link': 'Descubrir TechHub',
     
     // Dankeschön
     'thanks.title': 'Un sincero agradecimiento',
@@ -512,6 +528,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'prizes.second': '2. Nagrada',
     'prizes.third': '3. Nagrada',
     'prizes.voucher': 'TechHub bon',
+    'prizes.techhub.title': 'RealCore TechHub: Vaš partner za integracijo tehnologij',
+    'prizes.techhub.text1': 'RealCore TechHub služi kot osrednja tržnica za naše večtehnološke svetovalne in implementacijske storitve. Naš cilj je podpreti vas s temeljitim strokovnim znanjem pri digitalni preobrazbi.',
+    'prizes.techhub.text2': 'Ponujamo "Začetne pakete", ki vam omogočajo hiter in predvidljiv vstop v perspektivne tehnologije. Zahvaljujoč naši garanciji fiksne cene lahko brez tveganja vlagate v področja kot so Umetna inteligenca (UI), Cloud-native razvoj in Low-Code.',
+    'prizes.techhub.link': 'Odkrijte TechHub',
     
     // Dankeschön
     'thanks.title': 'Iskrena zahvala',

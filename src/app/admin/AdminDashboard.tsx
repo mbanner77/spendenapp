@@ -30,7 +30,12 @@ import {
   X,
   Filter,
   TrendingUp,
+  Languages,
+  Edit3,
+  RotateCcw,
+  Globe,
 } from 'lucide-react';
+import { translations as defaultTranslations, languages, Language } from '@/lib/translations';
 
 interface SMTPConfig {
   host: string;
@@ -64,7 +69,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type TabType = 'submissions' | 'smtp';
+type TabType = 'submissions' | 'smtp' | 'translations';
 
 export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('submissions');
@@ -97,10 +102,19 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   
   // Confirmation dialog
   const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id?: number; bulk?: boolean }>({ show: false });
+  
+  // Translations state
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>('de');
+  const [customTranslations, setCustomTranslations] = useState<Record<string, Record<string, string>>>({});
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState('');
+  const [translationFilter, setTranslationFilter] = useState('');
+  const [isSavingTranslation, setIsSavingTranslation] = useState(false);
 
   useEffect(() => {
     loadConfig();
     loadSubmissions();
+    loadTranslations();
   }, []);
 
   const loadConfig = async () => {
@@ -139,6 +153,68 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     } finally {
       setIsLoadingSubmissions(false);
     }
+  };
+
+  const loadTranslations = async () => {
+    try {
+      const response = await fetch('/api/admin/translations');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.translations) {
+          setCustomTranslations(data.translations);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load translations:', error);
+    }
+  };
+
+  const saveTranslation = async (language: string, key: string, value: string) => {
+    setIsSavingTranslation(true);
+    try {
+      const response = await fetch('/api/admin/translations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language, key, value }),
+      });
+      
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Übersetzung gespeichert' });
+        loadTranslations();
+        setEditingKey(null);
+      } else {
+        setMessage({ type: 'error', text: 'Fehler beim Speichern' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Ein Fehler ist aufgetreten' });
+    } finally {
+      setIsSavingTranslation(false);
+    }
+  };
+
+  const resetTranslation = async (language: string, key: string) => {
+    try {
+      const response = await fetch(`/api/admin/translations?language=${language}&key=${encodeURIComponent(key)}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Übersetzung zurückgesetzt' });
+        loadTranslations();
+      } else {
+        setMessage({ type: 'error', text: 'Fehler beim Zurücksetzen' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Ein Fehler ist aufgetreten' });
+    }
+  };
+
+  const getTranslationValue = (language: string, key: string): string => {
+    return customTranslations[language]?.[key] || defaultTranslations[language as Language]?.[key] || '';
+  };
+
+  const isCustomTranslation = (language: string, key: string): boolean => {
+    return !!customTranslations[language]?.[key];
   };
 
   const handleDeleteSubmission = async (id: number) => {
@@ -409,6 +485,17 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           >
             <Mail size={18} />
             E-Mail Konfiguration
+          </button>
+          <button
+            onClick={() => setActiveTab('translations')}
+            className={`px-6 py-3 font-medium transition-colors flex items-center gap-2 border-b-2 -mb-px ${
+              activeTab === 'translations'
+                ? 'border-realcore-gold text-realcore-gold'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Languages size={18} />
+            Texte verwalten
           </button>
         </div>
 
@@ -857,6 +944,158 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <li>• <strong>Gmail:</strong> smtp.gmail.com, Port 587 (App-Passwort erforderlich)</li>
                 <li>• <strong>SSL/TLS:</strong> Aktivieren Sie diese Option für Port 465</li>
                 <li>• Umgebungsvariablen haben Vorrang vor der gespeicherten Konfiguration</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Translations Tab */}
+        {activeTab === 'translations' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-sm">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-gray-800">
+                <Languages className="text-realcore-gold" size={24} />
+                Texte der App bearbeiten
+              </h2>
+              
+              <p className="text-gray-500 mb-6">
+                Hier können Sie alle Texte der App in allen Sprachen bearbeiten. Änderungen werden sofort wirksam.
+              </p>
+
+              {/* Language Selector */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Sprache auswählen
+                  </label>
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value as Language)}
+                    className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-800 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.code} value={lang.code}>
+                        {lang.flag} {lang.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Texte filtern
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="text"
+                      value={translationFilter}
+                      onChange={(e) => setTranslationFilter(e.target.value)}
+                      placeholder="Suchen..."
+                      className="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-800 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Translations List */}
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                {Object.keys(defaultTranslations[selectedLanguage] || {})
+                  .filter(key => {
+                    if (!translationFilter) return true;
+                    const searchLower = translationFilter.toLowerCase();
+                    return key.toLowerCase().includes(searchLower) || 
+                           getTranslationValue(selectedLanguage, key).toLowerCase().includes(searchLower);
+                  })
+                  .map((key) => (
+                    <div 
+                      key={key} 
+                      className={`p-4 rounded-lg border ${
+                        isCustomTranslation(selectedLanguage, key) 
+                          ? 'bg-yellow-50 border-yellow-200' 
+                          : 'bg-gray-50 border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-4 mb-2">
+                        <div className="flex items-center gap-2">
+                          <code className="text-sm text-gray-500 bg-gray-200 px-2 py-0.5 rounded">{key}</code>
+                          {isCustomTranslation(selectedLanguage, key) && (
+                            <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">
+                              Angepasst
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          {editingKey !== key && (
+                            <button
+                              onClick={() => {
+                                setEditingKey(key);
+                                setEditingValue(getTranslationValue(selectedLanguage, key));
+                              }}
+                              className="p-2 text-gray-500 hover:text-realcore-gold hover:bg-gray-100 rounded-lg transition-colors"
+                              title="Bearbeiten"
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                          )}
+                          {isCustomTranslation(selectedLanguage, key) && (
+                            <button
+                              onClick={() => resetTranslation(selectedLanguage, key)}
+                              className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Auf Standard zurücksetzen"
+                            >
+                              <RotateCcw size={16} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {editingKey === key ? (
+                        <div className="space-y-2">
+                          <textarea
+                            value={editingValue}
+                            onChange={(e) => setEditingValue(e.target.value)}
+                            rows={3}
+                            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 text-gray-800 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => saveTranslation(selectedLanguage, key, editingValue)}
+                              disabled={isSavingTranslation}
+                              className="px-4 py-2 rounded-lg gold-gradient text-realcore-primary font-medium flex items-center gap-2 hover:opacity-90 disabled:opacity-50"
+                            >
+                              {isSavingTranslation ? (
+                                <Loader2 className="animate-spin" size={16} />
+                              ) : (
+                                <Save size={16} />
+                              )}
+                              Speichern
+                            </button>
+                            <button
+                              onClick={() => setEditingKey(null)}
+                              className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                            >
+                              Abbrechen
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-gray-800 whitespace-pre-wrap">
+                          {getTranslationValue(selectedLanguage, key)}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            {/* Info Box */}
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
+              <h3 className="font-semibold mb-2 text-gray-700">Hinweise zur Textverwaltung</h3>
+              <ul className="text-sm text-gray-500 space-y-1">
+                <li>• <strong>Gelb markierte Texte</strong> wurden von Ihnen angepasst</li>
+                <li>• Mit dem <RotateCcw size={14} className="inline" /> Icon setzen Sie einen Text auf den Standardwert zurück</li>
+                <li>• Änderungen werden sofort auf der Website sichtbar (nach Seitenaktualisierung)</li>
+                <li>• Die Standardtexte bleiben als Fallback erhalten</li>
               </ul>
             </div>
           </div>

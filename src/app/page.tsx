@@ -252,20 +252,20 @@ export default function Home() {
             <div className="text-center p-6 rounded-xl bg-amber-50 border border-amber-200">
               <div className="text-4xl font-bold text-amber-700 mb-2">{t('prizes.third')}</div>
               <div className="text-3xl font-bold text-gray-800">3.000 €</div>
-              <div className="text-gray-500 mt-1">TechHub Gutschein</div>
+              <div className="text-gray-500 mt-1">{t('prizes.voucher')}</div>
             </div>
           </div>
 
           {/* TechHub Info */}
           <div className="danke-box rounded-xl p-6">
             <h3 className="text-xl font-bold mb-4 text-realcore-gold">
-              Der RealCore TechHub: Ihr Partner für Technologie-Integration
+              {t('prizes.techhub.title')}
             </h3>
             <p className="text-gray-600 leading-relaxed mb-4">
-              Der RealCore TechHub dient als zentraler Marktplatz für unsere technologieübergreifenden Beratungs- und Implementierungsleistungen. Unser Ziel ist es, Sie mit fundierter Expertise bei der digitalen Transformation zu unterstützen.
+              {t('prizes.techhub.text1')}
             </p>
             <p className="text-gray-600 leading-relaxed mb-4">
-              Wir bieten Ihnen "Starter Packages" an, die Ihnen einen schnellen und planbaren Einstieg in zukunftsweisende Technologien ermöglichen. Dank unserer Festpreis-Garantie können Sie risikofrei in Bereiche wie <strong>Künstliche Intelligenz (KI)</strong>, <strong>Cloud-native Entwicklung</strong> und <strong>Low-Code</strong> investieren.
+              {t('prizes.techhub.text2')}
             </p>
             <a
               href="https://techhub.realcore.de/landing"
@@ -273,7 +273,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-realcore-gold hover:text-yellow-300 transition-colors font-medium"
             >
-              TechHub entdecken <ExternalLink size={16} />
+              {t('prizes.techhub.link')} <ExternalLink size={16} />
             </a>
           </div>
         </div>
@@ -283,10 +283,10 @@ export default function Home() {
       <section className="max-w-3xl mx-auto px-4 py-12" id="formular">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Jetzt teilnehmen
+            {t('form.title')}
           </h2>
           <p className="text-lg text-gray-500">
-            Wählen Sie Ihre Spendenorganisation und nehmen Sie am Gewinnspiel teil
+            {t('form.subtitle')}
           </p>
         </div>
 
