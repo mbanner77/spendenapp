@@ -1,8 +1,62 @@
-import { Heart, FileText, ArrowLeft } from 'lucide-react';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { FileText, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+// Default content if database is empty
+const defaultContent = `<h2>1. Veranstalter</h2>
+<p>Veranstalter des Gewinnspiels ist die RealCore Group GmbH.</p>
+
+<h2>2. Teilnahmeberechtigung</h2>
+<p>Teilnahmeberechtigt sind alle natürlichen Personen ab 18 Jahren mit Wohnsitz in Deutschland. Mitarbeiter der RealCore Group GmbH und deren Angehörige sind von der Teilnahme ausgeschlossen.</p>
+
+<h2>3. Teilnahmezeitraum</h2>
+<p>Das Gewinnspiel läuft vom 01.12.2025 bis zum 31.12.2025 (Teilnahmeschluss).</p>
+
+<h2>4. Teilnahme</h2>
+<p>Die Teilnahme erfolgt durch vollständiges Ausfüllen des Teilnahmeformulars und Auswahl einer Spendenorganisation. Pro Person ist nur eine Teilnahme möglich.</p>
+
+<h2>5. Gewinne</h2>
+<p>Es werden folgende TechHub-Gutscheine verlost:</p>
+<ul>
+<li>1. Preis: 5.000 € TechHub-Gutschein</li>
+<li>2. Preis: 4.000 € TechHub-Gutschein</li>
+<li>3. Preis: 3.000 € TechHub-Gutschein</li>
+</ul>
+<p>Die Gutscheine können für Beratungs- und Implementierungsleistungen des RealCore TechHub eingelöst werden. Eine Barauszahlung ist nicht möglich.</p>
+
+<h2>6. Gewinnermittlung</h2>
+<p>Die Gewinner werden nach dem Teilnahmeschluss per Zufallsverfahren ermittelt und per E-Mail benachrichtigt.</p>
+
+<h2>7. Spendenauswahl</h2>
+<p>Die Gesamtspendensumme wird entsprechend der Auswahl aller Teilnehmer auf die Spendenorganisationen aufgeteilt.</p>
+
+<h2>8. Datenschutz</h2>
+<p>Die erhobenen Daten werden ausschließlich zur Durchführung des Gewinnspiels verwendet. Weitere Informationen finden Sie in unseren <a href="/datenschutz">Datenschutzhinweisen</a>.</p>
+
+<h2>9. Rechtsweg</h2>
+<p>Der Rechtsweg ist ausgeschlossen.</p>`;
+
 export default function TermsPage() {
+  const [title, setTitle] = useState('Teilnahmebedingungen');
+  const [content, setContent] = useState(defaultContent);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/admin/pages?slug=teilnahmebedingungen')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.page) {
+          setTitle(data.page.title);
+          setContent(data.page.content);
+        }
+      })
+      .catch(err => console.log('Using default content'))
+      .finally(() => setIsLoading(false));
+  }, []);
+
   return (
     <main className="min-h-screen">
       {/* Header */}
@@ -20,7 +74,7 @@ export default function TermsPage() {
             <FileText className="text-realcore-primary" size={24} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Teilnahmebedingungen</h1>
+            <h1 className="text-3xl font-bold text-gray-800">{title}</h1>
             <p className="text-gray-500">RealCore Weihnachtsgewinnspiel 2025</p>
           </div>
         </div>
@@ -29,97 +83,22 @@ export default function TermsPage() {
       {/* Content */}
       <section className="max-w-4xl mx-auto px-4 pb-12">
         <div className="card-gradient rounded-2xl p-8 md:p-10">
-          <div className="prose prose-lg max-w-none">
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">1. Veranstalter</h2>
-            <p className="text-gray-700 mb-6">
-              Veranstalter des Gewinnspiels ist die RealCore Group GmbH (nachfolgend "Veranstalter" genannt).
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">2. Teilnahmeberechtigung</h2>
-            <p className="text-gray-700 mb-6">
-              Teilnahmeberechtigt sind alle natürlichen Personen, die das 18. Lebensjahr vollendet haben und 
-              ihren Wohnsitz in Deutschland haben. Mitarbeiter des Veranstalters sowie deren Angehörige sind 
-              von der Teilnahme ausgeschlossen. Eine Mehrfachteilnahme ist nicht zulässig.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">3. Teilnahmezeitraum</h2>
-            <p className="text-gray-700 mb-6">
-              Das Gewinnspiel beginnt mit der Veröffentlichung dieser Seite und endet am 31.12.2025 um 23:59 Uhr (MEZ). 
-              Teilnahmen, die nach diesem Zeitpunkt eingehen, werden nicht berücksichtigt.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">4. Teilnahme</h2>
-            <p className="text-gray-700 mb-6">
-              Die Teilnahme erfolgt durch das vollständige Ausfüllen des Teilnahmeformulars auf dieser Website. 
-              Die Teilnahme ist kostenlos und nicht an den Kauf von Waren oder Dienstleistungen gebunden. 
-              Mit der Teilnahme wählen Sie gleichzeitig eine der beiden Spendenorganisationen aus, an die 
-              RealCore einen Betrag spenden wird.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">5. Gewinne</h2>
-            <p className="text-gray-700 mb-4">
-              Folgende Preise werden verlost:
-            </p>
-            <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-              <li>1. Preis: TechHub Gutschein im Wert von 5.000 €</li>
-              <li>2. Preis: TechHub Gutschein im Wert von 4.000 €</li>
-              <li>3. Preis: TechHub Gutschein im Wert von 3.000 €</li>
-            </ul>
-            <p className="text-gray-700 mb-6">
-              Die Gutscheine können für Beratungs- und Implementierungsleistungen des RealCore TechHub eingelöst werden.
-              Eine Barauszahlung der Gewinne ist nicht möglich. Die Gewinne sind nicht übertragbar.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">6. Gewinnermittlung</h2>
-            <p className="text-gray-700 mb-6">
-              Die Gewinner werden nach Ende des Teilnahmezeitraums durch Losverfahren ermittelt. Die Gewinner 
-              werden per E-Mail an die bei der Teilnahme angegebene E-Mail-Adresse benachrichtigt. Meldet sich 
-              ein Gewinner nicht innerhalb von 14 Tagen nach Benachrichtigung, verfällt der Gewinn und ein 
-              neuer Gewinner wird ausgelost.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">7. Datenschutz</h2>
-            <p className="text-gray-700 mb-6">
-              Die im Rahmen des Gewinnspiels erhobenen personenbezogenen Daten werden ausschließlich zur 
-              Durchführung und Abwicklung des Gewinnspiels verwendet. Eine Weitergabe an Dritte erfolgt nicht, 
-              es sei denn, dies ist zur Durchführung des Gewinnspiels erforderlich. Nach Beendigung des 
-              Gewinnspiels werden die Daten gelöscht, sofern keine gesetzlichen Aufbewahrungspflichten 
-              entgegenstehen. Weitere Informationen finden Sie in unseren{' '}
-              <Link href="/datenschutz" className="text-realcore-gold hover:underline">
-                Datenschutzhinweisen
-              </Link>.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">8. Haftungsausschluss</h2>
-            <p className="text-gray-700 mb-6">
-              Der Veranstalter haftet nicht für technische Störungen, die eine Teilnahme am Gewinnspiel 
-              verhindern oder beeinträchtigen. Der Rechtsweg ist ausgeschlossen.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">9. Änderungen der Teilnahmebedingungen</h2>
-            <p className="text-gray-700 mb-6">
-              Der Veranstalter behält sich vor, das Gewinnspiel jederzeit ohne Vorankündigung zu beenden, 
-              falls unvorhergesehene Umstände dies erforderlich machen. Der Veranstalter behält sich ferner 
-              vor, diese Teilnahmebedingungen jederzeit zu ändern.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">10. Salvatorische Klausel</h2>
-            <p className="text-gray-700 mb-6">
-              Sollten einzelne Bestimmungen dieser Teilnahmebedingungen unwirksam sein oder werden, bleibt 
-              die Wirksamkeit der übrigen Bestimmungen unberührt.
-            </p>
-
-            <h2 className="text-xl font-bold text-realcore-gold mb-4">11. Anwendbares Recht</h2>
-            <p className="text-gray-700 mb-6">
-              Es gilt ausschließlich das Recht der Bundesrepublik Deutschland.
-            </p>
-
-            <div className="border-t border-gray-200 pt-6 mt-8">
-              <p className="text-gray-500 text-sm">
-                Stand: Dezember 2025<br />
-                RealCore Group GmbH
-              </p>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="animate-spin text-realcore-gold" size={32} />
             </div>
+          ) : (
+            <div 
+              className="prose prose-lg max-w-none [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-realcore-gold [&_h2]:mb-4 [&_h2]:mt-6 first:[&_h2]:mt-0 [&_p]:text-gray-700 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:text-gray-700 [&_ul]:mb-6 [&_ul]:space-y-2 [&_li]:text-gray-700 [&_a]:text-realcore-gold [&_a]:hover:underline"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+          )}
+
+          <div className="border-t border-gray-200 pt-6 mt-8">
+            <p className="text-gray-500 text-sm">
+              Stand: Dezember 2025<br />
+              RealCore Group GmbH
+            </p>
           </div>
         </div>
       </section>
@@ -129,7 +108,7 @@ export default function TermsPage() {
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center justify-center gap-2">
             <Image
-              src="https://realcore.info/bilder/rc-logo.png"
+              src="/realcore-logo.jpg"
               alt="RealCore Group Logo"
               width={120}
               height={36}

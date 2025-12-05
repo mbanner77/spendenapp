@@ -34,6 +34,8 @@ import {
   Edit3,
   RotateCcw,
   Globe,
+  FileText,
+  Eye,
 } from 'lucide-react';
 import { translations as defaultTranslations, languages, Language } from '@/lib/translations';
 
@@ -69,7 +71,14 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type TabType = 'submissions' | 'smtp' | 'translations';
+type TabType = 'submissions' | 'smtp' | 'translations' | 'pages';
+
+interface PageContent {
+  slug: string;
+  title: string;
+  content: string;
+  updated_at?: string;
+}
 
 export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('submissions');
@@ -110,6 +119,14 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [editingValue, setEditingValue] = useState('');
   const [translationFilter, setTranslationFilter] = useState('');
   const [isSavingTranslation, setIsSavingTranslation] = useState(false);
+  
+  // Pages state
+  const [pages, setPages] = useState<PageContent[]>([]);
+  const [selectedPage, setSelectedPage] = useState<string>('datenschutz');
+  const [pageTitle, setPageTitle] = useState('');
+  const [pageContent, setPageContent] = useState('');
+  const [isSavingPage, setIsSavingPage] = useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
 
   useEffect(() => {
     loadConfig();
@@ -216,6 +233,159 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const isCustomTranslation = (language: string, key: string): boolean => {
     return !!customTranslations[language]?.[key];
   };
+
+  // Default page contents
+  const defaultPages: Record<string, { title: string; content: string }> = {
+    datenschutz: {
+      title: 'Datenschutzhinweise',
+      content: `<h2>1. Verantwortlicher</h2>
+<p>Verantwortlich für die Datenverarbeitung im Rahmen dieses Gewinnspiels ist:</p>
+<p>RealCore Group GmbH<br>[Adresse wird ergänzt]<br>E-Mail: events@realcore.de</p>
+
+<h2>2. Erhobene Daten</h2>
+<p>Im Rahmen des Gewinnspiels erheben wir folgende personenbezogene Daten:</p>
+<ul>
+<li>Name (Titel, Vor- und Nachname)</li>
+<li>Firma</li>
+<li>Position</li>
+<li>E-Mail-Adresse</li>
+<li>Ihre Spendenauswahl</li>
+</ul>
+
+<h2>3. Zweck der Datenverarbeitung</h2>
+<p>Die erhobenen Daten werden ausschließlich für folgende Zwecke verwendet:</p>
+<ul>
+<li>Durchführung und Abwicklung des Gewinnspiels</li>
+<li>Ermittlung und Benachrichtigung der Gewinner</li>
+<li>Umsetzung Ihrer Spendenauswahl</li>
+</ul>
+
+<h2>4. Rechtsgrundlage</h2>
+<p>Die Verarbeitung Ihrer Daten erfolgt auf Grundlage Ihrer Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO, die Sie durch die Teilnahme am Gewinnspiel erteilen.</p>
+
+<h2>5. Speicherdauer</h2>
+<p>Ihre Daten werden nach Beendigung des Gewinnspiels und Abwicklung der Gewinnvergabe gelöscht, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+
+<h2>6. Ihre Rechte</h2>
+<p>Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:</p>
+<ul>
+<li>Recht auf Auskunft (Art. 15 DSGVO)</li>
+<li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
+<li>Recht auf Löschung (Art. 17 DSGVO)</li>
+<li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+<li>Recht auf Widerspruch (Art. 21 DSGVO)</li>
+<li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
+<li>Recht auf Widerruf Ihrer Einwilligung</li>
+</ul>
+<p>Zur Ausübung Ihrer Rechte wenden Sie sich bitte an: events@realcore.de</p>
+
+<h2>7. Beschwerderecht</h2>
+<p>Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten zu beschweren.</p>
+
+<h2>8. Weitergabe von Daten</h2>
+<p>Eine Weitergabe Ihrer Daten an Dritte erfolgt nicht, es sei denn, dies ist zur Durchführung des Gewinnspiels erforderlich oder gesetzlich vorgeschrieben.</p>
+
+<h2>9. Kontakt</h2>
+<p>Bei Fragen zum Datenschutz im Rahmen dieses Gewinnspiels wenden Sie sich bitte an:<br>E-Mail: events@realcore.de</p>`,
+    },
+    teilnahmebedingungen: {
+      title: 'Teilnahmebedingungen',
+      content: `<h2>1. Veranstalter</h2>
+<p>Veranstalter des Gewinnspiels ist die RealCore Group GmbH.</p>
+
+<h2>2. Teilnahmeberechtigung</h2>
+<p>Teilnahmeberechtigt sind alle natürlichen Personen ab 18 Jahren mit Wohnsitz in Deutschland. Mitarbeiter der RealCore Group GmbH und deren Angehörige sind von der Teilnahme ausgeschlossen.</p>
+
+<h2>3. Teilnahmezeitraum</h2>
+<p>Das Gewinnspiel läuft vom 01.12.2025 bis zum 31.12.2025 (Teilnahmeschluss).</p>
+
+<h2>4. Teilnahme</h2>
+<p>Die Teilnahme erfolgt durch vollständiges Ausfüllen des Teilnahmeformulars und Auswahl einer Spendenorganisation. Pro Person ist nur eine Teilnahme möglich.</p>
+
+<h2>5. Gewinne</h2>
+<p>Es werden folgende TechHub-Gutscheine verlost:</p>
+<ul>
+<li>1. Preis: 5.000 € TechHub-Gutschein</li>
+<li>2. Preis: 4.000 € TechHub-Gutschein</li>
+<li>3. Preis: 3.000 € TechHub-Gutschein</li>
+</ul>
+
+<h2>6. Gewinnermittlung</h2>
+<p>Die Gewinner werden nach dem Teilnahmeschluss per Zufallsverfahren ermittelt und per E-Mail benachrichtigt.</p>
+
+<h2>7. Spendenauswahl</h2>
+<p>Die Gesamtspendensumme wird entsprechend der Auswahl aller Teilnehmer auf die Spendenorganisationen aufgeteilt.</p>
+
+<h2>8. Datenschutz</h2>
+<p>Die erhobenen Daten werden ausschließlich zur Durchführung des Gewinnspiels verwendet. Weitere Informationen finden Sie in unseren Datenschutzhinweisen.</p>
+
+<h2>9. Rechtsweg</h2>
+<p>Der Rechtsweg ist ausgeschlossen.</p>`,
+    },
+  };
+
+  const loadPage = async (slug: string) => {
+    setIsLoadingPage(true);
+    try {
+      const response = await fetch(`/api/admin/pages?slug=${slug}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.page) {
+          setPageTitle(data.page.title);
+          setPageContent(data.page.content);
+        } else {
+          // Use default content
+          const defaultPage = defaultPages[slug];
+          if (defaultPage) {
+            setPageTitle(defaultPage.title);
+            setPageContent(defaultPage.content);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load page:', error);
+      // Use default content on error
+      const defaultPage = defaultPages[slug];
+      if (defaultPage) {
+        setPageTitle(defaultPage.title);
+        setPageContent(defaultPage.content);
+      }
+    } finally {
+      setIsLoadingPage(false);
+    }
+  };
+
+  const savePage = async () => {
+    setIsSavingPage(true);
+    try {
+      const response = await fetch('/api/admin/pages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: selectedPage,
+          title: pageTitle,
+          content: pageContent,
+        }),
+      });
+      
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Seite gespeichert' });
+      } else {
+        setMessage({ type: 'error', text: 'Fehler beim Speichern' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Ein Fehler ist aufgetreten' });
+    } finally {
+      setIsSavingPage(false);
+    }
+  };
+
+  // Load page when selectedPage changes
+  useEffect(() => {
+    if (activeTab === 'pages') {
+      loadPage(selectedPage);
+    }
+  }, [selectedPage, activeTab]);
 
   const handleDeleteSubmission = async (id: number) => {
     if (!confirm('Möchten Sie diese Teilnahme wirklich löschen?')) return;
@@ -496,6 +666,17 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           >
             <Languages size={18} />
             Texte verwalten
+          </button>
+          <button
+            onClick={() => setActiveTab('pages')}
+            className={`px-6 py-3 font-medium transition-colors flex items-center gap-2 border-b-2 -mb-px ${
+              activeTab === 'pages'
+                ? 'border-realcore-gold text-realcore-gold'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <FileText size={18} />
+            Rechtliche Seiten
           </button>
         </div>
 
@@ -1096,6 +1277,137 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <li>• Mit dem <RotateCcw size={14} className="inline" /> Icon setzen Sie einen Text auf den Standardwert zurück</li>
                 <li>• Änderungen werden sofort auf der Website sichtbar (nach Seitenaktualisierung)</li>
                 <li>• Die Standardtexte bleiben als Fallback erhalten</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Pages Tab */}
+        {activeTab === 'pages' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-sm">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-gray-800">
+                <FileText className="text-realcore-gold" size={24} />
+                Rechtliche Seiten bearbeiten
+              </h2>
+              
+              <p className="text-gray-500 mb-6">
+                Bearbeiten Sie hier die Datenschutzhinweise und Teilnahmebedingungen. Der Inhalt kann HTML-Tags enthalten.
+              </p>
+
+              {/* Page Selector */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Seite auswählen
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setSelectedPage('datenschutz')}
+                    className={`flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-colors flex items-center justify-center gap-2 ${
+                      selectedPage === 'datenschutz'
+                        ? 'border-realcore-gold bg-realcore-gold/10 text-realcore-gold'
+                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    <Shield size={18} />
+                    Datenschutzhinweise
+                  </button>
+                  <button
+                    onClick={() => setSelectedPage('teilnahmebedingungen')}
+                    className={`flex-1 px-4 py-3 rounded-lg border-2 font-medium transition-colors flex items-center justify-center gap-2 ${
+                      selectedPage === 'teilnahmebedingungen'
+                        ? 'border-realcore-gold bg-realcore-gold/10 text-realcore-gold'
+                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    <FileText size={18} />
+                    Teilnahmebedingungen
+                  </button>
+                </div>
+              </div>
+
+              {isLoadingPage ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="animate-spin text-realcore-gold" size={32} />
+                </div>
+              ) : (
+                <>
+                  {/* Title Input */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Seitentitel
+                    </label>
+                    <input
+                      type="text"
+                      value={pageTitle}
+                      onChange={(e) => setPageTitle(e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-800 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30"
+                    />
+                  </div>
+
+                  {/* Content Editor */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Seiteninhalt (HTML)
+                    </label>
+                    <textarea
+                      value={pageContent}
+                      onChange={(e) => setPageContent(e.target.value)}
+                      rows={20}
+                      className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-800 font-mono text-sm focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30"
+                      placeholder="<h2>Überschrift</h2><p>Inhalt...</p>"
+                    />
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={savePage}
+                      disabled={isSavingPage}
+                      className="flex-1 py-3 px-6 rounded-lg gold-gradient text-realcore-primary font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+                    >
+                      {isSavingPage ? (
+                        <><Loader2 className="animate-spin" size={20} /> Speichern...</>
+                      ) : (
+                        <><Save size={20} /> Seite speichern</>
+                      )}
+                    </button>
+                    <a
+                      href={`/${selectedPage}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Eye size={20} />
+                      Vorschau
+                    </a>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Preview */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-800">
+                <Eye className="text-realcore-gold" size={20} />
+                Live-Vorschau
+              </h3>
+              <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                <h1 className="text-2xl font-bold text-gray-800 mb-4">{pageTitle}</h1>
+                <div 
+                  className="prose prose-lg max-w-none [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-realcore-gold [&_h2]:mb-4 [&_h2]:mt-6 [&_p]:text-gray-700 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:list-inside [&_ul]:text-gray-700 [&_ul]:mb-4 [&_li]:mb-1"
+                  dangerouslySetInnerHTML={{ __html: pageContent }}
+                />
+              </div>
+            </div>
+
+            {/* Info Box */}
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
+              <h3 className="font-semibold mb-2 text-gray-700">Hinweise zur Seitenbearbeitung</h3>
+              <ul className="text-sm text-gray-500 space-y-1">
+                <li>• Verwenden Sie HTML-Tags für die Formatierung: <code className="bg-gray-200 px-1 rounded">&lt;h2&gt;</code>, <code className="bg-gray-200 px-1 rounded">&lt;p&gt;</code>, <code className="bg-gray-200 px-1 rounded">&lt;ul&gt;</code>, <code className="bg-gray-200 px-1 rounded">&lt;li&gt;</code></li>
+                <li>• Änderungen werden sofort auf der Website wirksam</li>
+                <li>• Die Vorschau zeigt das ungefähre Aussehen der Seite</li>
               </ul>
             </div>
           </div>
