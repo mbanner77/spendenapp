@@ -30,34 +30,34 @@ export default function ThankYouPage() {
 
           {/* Thank You Message */}
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-white via-realcore-gold to-white bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gray-800 via-realcore-gold to-gray-800 bg-clip-text text-transparent">
               Vielen Dank für Ihre Teilnahme!
             </span>
           </h1>
 
-          <p className="text-xl text-white/80 mb-6">
+          <p className="text-xl text-gray-600 mb-6">
             Ihre Spendenwahl wurde erfolgreich übermittelt.
           </p>
 
-          <div className="bg-white/10 rounded-xl p-6 mb-8 border border-white/20">
+          <div className="bg-realcore-gold/10 rounded-xl p-6 mb-8 border border-realcore-gold/30">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Gift className="text-realcore-gold" size={24} />
               <span className="text-lg font-semibold text-realcore-gold">
                 Sie nehmen nun am Gewinnspiel teil!
               </span>
             </div>
-            <p className="text-white/70">
+            <p className="text-gray-600">
               Wir werden die Gewinner per E-Mail benachrichtigen. 
               Viel Glück beim Gewinnspiel!
             </p>
           </div>
 
-          <div className="space-y-4 text-left bg-white/5 rounded-xl p-6 mb-8">
+          <div className="space-y-4 text-left danke-box rounded-xl p-6 mb-8">
             <h2 className="text-lg font-semibold text-realcore-gold flex items-center gap-2">
               <Heart size={20} />
               Was passiert jetzt?
             </h2>
-            <ul className="space-y-3 text-white/80">
+            <ul className="space-y-3 text-gray-700">
               <li className="flex items-start gap-3">
                 <span className="text-realcore-gold font-bold">1.</span>
                 <span>Ihre Spendenwahl wird an RealCore übermittelt.</span>
@@ -73,7 +73,7 @@ export default function ThankYouPage() {
             </ul>
           </div>
 
-          <p className="text-lg text-white/90 mb-8">
+          <p className="text-lg text-gray-700 mb-8">
             Wir wünschen Ihnen und Ihrer Familie eine frohe und besinnliche Weihnachtszeit.
           </p>
 
@@ -84,7 +84,7 @@ export default function ThankYouPage() {
           {/* Back to Home Button */}
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 transition-colors"
           >
             <Home size={20} />
             Zurück zur Startseite
@@ -102,7 +102,7 @@ export default function ThankYouPage() {
               className="h-8 w-auto"
             />
           </div>
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-gray-400">
             © 2025 RealCore Group GmbH. Alle Rechte vorbehalten.
           </p>
         </div>

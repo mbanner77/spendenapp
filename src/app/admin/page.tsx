@@ -84,13 +84,13 @@ export default function AdminPage() {
             <div className="w-16 h-16 rounded-full bg-realcore-gold/20 flex items-center justify-center mx-auto mb-4">
               <Lock className="text-realcore-gold" size={32} />
             </div>
-            <h1 className="text-2xl font-bold">Admin-Bereich</h1>
-            <p className="text-white/60 mt-2">Bitte melden Sie sich an</p>
+            <h1 className="text-2xl font-bold text-gray-800">Admin-Bereich</h1>
+            <p className="text-gray-500 mt-2">Bitte melden Sie sich an</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-white/90 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Passwort
               </label>
               <input
@@ -98,15 +98,15 @@ export default function AdminPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors"
+                className="w-full px-4 py-3 rounded-lg bg-white border border-gray-800 text-gray-800 placeholder-gray-400 focus:border-realcore-gold focus:ring-2 focus:ring-realcore-gold/30 transition-colors"
                 placeholder="••••••••"
                 required
               />
             </div>
 
             {error && (
-              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
-                <p className="text-red-300 text-sm flex items-center gap-2">
+              <div className="bg-red-100 border border-red-300 rounded-lg p-3">
+                <p className="text-red-600 text-sm flex items-center gap-2">
                   <AlertCircle size={16} />
                   {error}
                 </p>
@@ -133,8 +133,8 @@ export default function AdminPage() {
           </form>
         </div>
 
-        <p className="text-center text-white/40 text-sm mt-6">
-          <a href="/" className="hover:text-white transition-colors">
+        <p className="text-center text-gray-400 text-sm mt-6">
+          <a href="/" className="hover:text-gray-700 transition-colors">
             ← Zurück zur Hauptseite
           </a>
         </p>
