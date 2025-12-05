@@ -83,9 +83,16 @@ export async function POST(request: NextRequest) {
     // Test the connection first
     await transporter.verify();
 
-    // Send test email
-    await transporter.sendMail({
-      from: config.from,
+    // SiteGround requires MAIL FROM to match the authenticated user
+    const mailOptions: {
+      from: string;
+      to: string;
+      subject: string;
+      text: string;
+      html: string;
+      envelope?: { from: string; to: string };
+    } = {
+      from: `"RealCore Spendenapp" <${config.user}>`,
       to: recipient,
       subject: '🎄 RealCore Spendenapp - Test-E-Mail',
       text: `Dies ist eine Test-E-Mail von der RealCore Spendenapp.
@@ -130,7 +137,17 @@ Gesendet am: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
 </body>
 </html>
       `,
-    });
+    };
+    
+    // If the configured "from" is different from the user, use envelope
+    if (config.from && config.from !== config.user) {
+      mailOptions.envelope = {
+        from: config.user, // SMTP MAIL FROM must be the authenticated user
+        to: recipient,
+      };
+    }
+
+    await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ 
       success: true, 

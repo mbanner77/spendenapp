@@ -179,13 +179,33 @@ Zeitstempel: ${new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
         },
       });
 
-      await transporter.sendMail({
-        from: smtpConfig.from,
+      // SiteGround requires MAIL FROM to match the authenticated user
+      // Use envelope to set the actual SMTP MAIL FROM to the auth user
+      // while keeping the display "From" header as desired
+      const mailOptions: {
+        from: string;
+        to: string;
+        subject: string;
+        text: string;
+        html: string;
+        envelope?: { from: string; to: string };
+      } = {
+        from: `"RealCore Weihnachtsaktion" <${smtpConfig.user}>`,
         to: 'events@realcore.de',
         subject: `🎄 Neue Gewinnspiel-Teilnahme: ${data.name} - ${data.firma}`,
         text: emailContent,
         html: htmlContent,
-      });
+      };
+      
+      // If the configured "from" is different from the user, use envelope
+      if (smtpConfig.from && smtpConfig.from !== smtpConfig.user) {
+        mailOptions.envelope = {
+          from: smtpConfig.user, // SMTP MAIL FROM must be the authenticated user
+          to: 'events@realcore.de',
+        };
+      }
+
+      await transporter.sendMail(mailOptions);
 
       console.log('Email sent successfully to events@realcore.de');
     } else {
